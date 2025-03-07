@@ -1,0 +1,15 @@
+spring:
+  application  :
+    name : OrderManagement1
+  datasource:
+    url: jdbc:mysql://localhost:3306/OrderManagement1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+server:
+  #port: 8080
+  port : 9095
