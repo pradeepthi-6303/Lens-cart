@@ -1,13 +1,16 @@
 package com.capgemini.onlinelenscart.Repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.capgemini.onlinelenscart.entities.User;
+import com.capgemini.onlinelenscart.entities.Users;
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<Users, Long> {
 
-	public User findByUsername(String username);
+	  // select * from customer where username=?
+	   Optional<Users> findByUsername(String username);
 
 
 }
