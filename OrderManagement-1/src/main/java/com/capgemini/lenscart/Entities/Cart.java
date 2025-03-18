@@ -1,15 +1,18 @@
 package com.capgemini.lenscart.Entities;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Positive;
 
 @Entity
 public class Cart {
-    @Id
+   @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "itemId")
     private int itemId;
@@ -19,6 +22,11 @@ public class Cart {
     private double price;
     private String image;
     private int customerId;
+    
+    
+ // One-to-many relationship with CartItem
+    @OneToMany(mappedBy = "cart") // 'ca[rt' refers to the Cart object in CartItem class
+    private List<CartItem> cartItems;
 
     public Cart() {
         super();

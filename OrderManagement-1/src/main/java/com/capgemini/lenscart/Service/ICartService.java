@@ -10,6 +10,6 @@ public interface ICartService {
     Optional<Cart> getCartById(int itemId);
     List<Cart> getAllCarts();
     List<Cart> getCartsByCustomerId(int customerId);
-    void deleteCart(int itemId);
+    public boolean  deleteCart(int itemId);
 
 }

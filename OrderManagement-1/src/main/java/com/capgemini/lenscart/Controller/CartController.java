@@ -3,7 +3,11 @@ package com.capgemini.lenscart.Controller;
 import com.capgemini.lenscart.Dto.CartDto;
 import com.capgemini.lenscart.Entities.Cart;
 import com.capgemini.lenscart.Exception.CartNotFoundException;
+import com.capgemini.lenscart.Service.CartServiceImpl;
 import com.capgemini.lenscart.Service.ICartService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +21,14 @@ import java.util.Optional;
 @RequestMapping("/carts")
 @Validated
 public class CartController {
+	@Autowired
+	private CartServiceImpl cartService;
 
-    private final ICartService cartService;
-
-    @Autowired
-    public CartController(ICartService cartService) {
-        this.cartService = cartService;
-    }
+    //private final ICartService cartService;
+//    @Autowired
+//    public CartController(ICartService cartService) {
+//        this.cartService = cartService;
+//    }
 
     // Add a new cart
 //    @PostMapping("/add")
@@ -41,7 +46,7 @@ public class CartController {
 //        return new ResponseEntity<>(savedCart, HttpStatus.CREATED);
 //    }
     @PostMapping("/add")
-    public ResponseEntity<Cart> addCart(@Validated @RequestBody CartDto cartDto) {
+    public ResponseEntity<Cart> addCart( @RequestBody @Valid CartDto cartDto) {
         try {
             // Manually convert CartDto to Cart entity
             Cart cart = new Cart();
@@ -75,7 +80,7 @@ public class CartController {
     }
 
     // Get all carts
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Cart>> getAllCarts() {
         List<Cart> carts = cartService.getAllCarts();
         return new ResponseEntity<>(carts, HttpStatus.OK);
@@ -90,8 +95,9 @@ public class CartController {
 
     // Delete a cart by ID
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Void> deleteCart(@PathVariable int itemId) {
-        cartService.deleteCart(itemId);
-        return ResponseEntity.noContent().build();
+    public String deleteCart(@PathVariable int itemId) {
+        return cartService.deleteCart(itemId)? "cart item deleted successfully": "cart not found";
+        		
+        
     }
 }

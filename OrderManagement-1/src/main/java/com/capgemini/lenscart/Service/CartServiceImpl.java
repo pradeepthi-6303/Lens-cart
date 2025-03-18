@@ -1,7 +1,9 @@
 package com.capgemini.lenscart.Service;
 
 import com.capgemini.lenscart.Entities.Cart;
-import com.capgemini.lenscart.Repositories.CartRepo;
+import com.capgemini.lenscart.Exception.CartItemNotFoundException;
+import com.capgemini.lenscart.Repositories.CartRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +13,10 @@ import java.util.Optional;
 @Service
 public class CartServiceImpl implements ICartService {
 
-    private final CartRepo cartRepository;
+    private final CartRepository cartRepository;
 
     @Autowired
-    public CartServiceImpl(CartRepo cartRepository) {
+    public CartServiceImpl(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
 
@@ -39,7 +41,12 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public void deleteCart(int itemId) {
-        cartRepository.deleteById(itemId);
+    public boolean deleteCart(int itemId) {
+       Optional<Cart> cartOpt = cartRepository.findById(itemId);
+       if (!cartOpt.isPresent()) {
+           throw new CartItemNotFoundException("Cart with ID " + itemId + " not found");
+       }
+       cartRepository.delete(cartOpt.get());
+       return true;
     }
 }

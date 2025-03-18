@@ -1,30 +1,28 @@
 package com.capgemini.lenscart.Dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 public class CartDto {
-	    @NotNull(message = "Cart item name should not be empty")
-	   @Size(min = 1, message = "Cart item name should not be empty")
-	    private String name;
 
-	    @NotNull(message = "Cart item brand should not be empty")
-	    @Size(min = 1, message = "Cart item brand should not be empty")
-	    private String brand;
+    @NotBlank(message = "{cart.name.notblank}")
+    private String name;
 
-	    @NotNull(message = "Cart item price should not be empty")
-	    @Positive(message = "price must be positive")
-	    
-	    private double price;
+    @NotBlank(message = "{cart.brand.notblank}")
+    private String brand;
 
-	    @NotNull(message = "Cart image should not be empty")
-	    @Size(min = 1, message = "Cart item image should not be empty")
-	    private String image;
+    @NotNull(message = "{cart.price.notnull}")
+    @Positive(message = "{cart.price.positive}")
+    private Double price;
 
-	    @NotNull(message = "Cart customer ID should not be empty")
-	    private int customerId;
-  
+    @NotBlank(message = "{cart.image.notblank}")
+    private String image;
+
+    @NotNull(message = "{cart.customerId.notnull}")
+    @Min(value = 1, message = "{cart.customerId.min}")
+    private Integer customerId;
 
     // Getters and Setters
     public String getName() {
