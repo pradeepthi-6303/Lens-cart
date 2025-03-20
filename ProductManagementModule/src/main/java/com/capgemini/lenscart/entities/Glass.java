@@ -13,7 +13,7 @@ public class Glass {
 	private String name;
 	private String image;
 	private String brand;
-	private double price;
+	private Double price;
 	private String type; // zero power, digital screen protection, single vision, bifocal powered glass
 	private String powerRange;
 
@@ -55,11 +55,11 @@ public class Glass {
 		this.brand = brand;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -88,7 +88,7 @@ public class Glass {
 	}
 
 	// Constructors
-	public Glass(Long id, String name, String image, String brand, double price, String type, String powerRange, Category category) {
+	public Glass(Long id, String name, String image, String brand, Double price, String type, String powerRange, Category category) {
 		this.id = id;
 		this.name = name;
 		this.image = image;

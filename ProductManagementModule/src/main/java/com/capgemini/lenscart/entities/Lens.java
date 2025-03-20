@@ -20,7 +20,7 @@ public class Lens {
 	private String image;
 	private String shape;
 	private String color;
-	private double price;
+	private Double price;
 	private int quantityInBox;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -70,11 +70,11 @@ public class Lens {
 		this.color = color;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 

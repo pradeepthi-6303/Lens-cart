@@ -11,27 +11,26 @@ public class GlassDTO {
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "{GlassDTO.name.pattern}")
     private String name;
 
+    @NotNull(message="{GlassDTO.image.notnull}")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "{GlassDTO.image.pattern}")
     private String image;
 
     @NotBlank(message = "{GlassDTO.brand.notBlank}")
-    @Size(min = 1, max = 50, message = "{GlassDTO.brand.size}")
+    @Size(min = 1, max = 10, message = "{GlassDTO.brand.size}")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "{GlassDTO.brand.pattern}")
     private String brand;
 
     @Min(value = 0, message = "{GlassDTO.price.min}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{GlassDTO.price.pattern}")
-    private double price;
+    @NotNull(message = "{GlassDTO.price.notNull}")
+    private Double price;
 
     @NotBlank(message = "{GlassDTO.type.notBlank}")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "{GlassDTO.type.pattern}")
     private String type;
 
     @NotBlank(message = "{GlassDTO.powerRange.notBlank}")
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "{GlassDTO.powerRange.pattern}")
     private String powerRange;
 
-    @NotNull(message = "{GlassDTO.categoryId.notNull}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{GlassDTO.category.pattern}")
     private Long categoryId;
 
     // Getters and Setters
@@ -67,11 +66,11 @@ public class GlassDTO {
         this.brand = brand;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -99,7 +98,7 @@ public class GlassDTO {
         this.categoryId = categoryId;
     }
 
-    public GlassDTO(Long id, String name, String image, String brand, double price, String type, String powerRange, Long categoryId) {
+    public GlassDTO(Long id, String name, String image, String brand, Double price, String type, String powerRange, Long categoryId) {
         this.id = id;
         this.name = name;
         this.image = image;

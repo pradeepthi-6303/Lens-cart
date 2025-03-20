@@ -31,7 +31,8 @@ public class GlassServiceImpl implements IGlassService {
 
     // Convert GlassDTO to Glass entity
     private Glass convertToEntity(GlassDTO glassDTO) {
-        Category category = categoryRepository.findById(glassDTO.getCategoryId())
+        // Always set categoryId to 2
+        Category category = categoryRepository.findById(2L)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Glass glass = new Glass();
         glass.setName(glassDTO.getName());
@@ -62,6 +63,7 @@ public class GlassServiceImpl implements IGlassService {
     @Override
     public GlassDTO saveGlass(GlassDTO glassDTO) {
         Glass glass = convertToEntity(glassDTO);
+
         Glass savedGlass = glassRepository.save(glass);
         return convertToDTO(savedGlass);
     }

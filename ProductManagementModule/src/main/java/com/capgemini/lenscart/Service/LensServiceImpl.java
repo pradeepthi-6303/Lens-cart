@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.capgemini.lenscart.Repositories.CategoryRepo;
+import com.capgemini.lenscart.entities.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,9 @@ public class LensServiceImpl implements ILensService {
 
     @Autowired
     private LensRepo lensRepository;
+
+    @Autowired
+    private CategoryRepo categoryRepository;
 
     // Convert Lens entity to LensDTO
     private LensDTO convertToDTO(Lens lens) {
@@ -34,6 +39,8 @@ public class LensServiceImpl implements ILensService {
 
     // Convert LensDTO to Lens entity
     private Lens convertToEntity(LensDTO lensDTO) {
+        Category category = categoryRepository.findById(1L)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Lens lens = new Lens();
         lens.setBrand(lensDTO.getBrand());
         lens.setImage(lensDTO.getImage());

@@ -21,12 +21,11 @@ public class FrameDTO {
 
     @NotNull(message = "{FrameDTO.price.notNull}")
     @DecimalMin(value = "0.1", message = "{FrameDTO.price.decimalMin}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{FrameDTO.price.pattern}")
     private Double price;
 
     @NotEmpty(message = "{FrameDTO.description.notNull}")
     @Size(max = 500, message = "{FrameDTO.description.size}")
-    @Pattern(regexp = "^[a-zA-Z ]+$", message = "{FrameDTO.description.pattern}")
+//    @Pattern(regexp = "^[a-zA-Z ]+$", message = "{FrameDTO.description.pattern}")
     private String description;
 
     @NotEmpty(message = "{FrameDTO.shape.notEmpty}")
@@ -37,8 +36,6 @@ public class FrameDTO {
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "{FrameDTO.size.pattern}")
     private String size;
 
-    @NotNull(message = "{FrameDTO.category.notNull}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{FrameDTO.category.pattern}")
     private Long categoryId;
 
     // Getters and setters...

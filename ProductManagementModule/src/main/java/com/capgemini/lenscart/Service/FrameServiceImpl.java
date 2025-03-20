@@ -31,6 +31,8 @@ public class FrameServiceImpl implements IFrameService {
 
     // Convert FrameDTO to Frame entity
     private Frame convertToEntity(FrameDTO frameDTO) {
+        Category category = categoryRepository.findById(4L)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Frame frame = new Frame();
         frame.setName(frameDTO.getName());
         frame.setColor(frameDTO.getColor());
@@ -40,8 +42,6 @@ public class FrameServiceImpl implements IFrameService {
         frame.setSize(frameDTO.getSize());
 
         // Fetch Category entity from categoryId
-        Category category = categoryRepository.findById(frameDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category with ID " + frameDTO.getCategoryId() + " not found"));
         frame.setCategory(category); // Set Category entity in Frame
 
         return frame;

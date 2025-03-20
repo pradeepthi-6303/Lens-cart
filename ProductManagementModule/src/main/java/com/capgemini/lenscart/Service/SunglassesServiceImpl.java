@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.capgemini.lenscart.Repositories.CategoryRepo;
+import com.capgemini.lenscart.entities.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,14 @@ public class SunglassesServiceImpl implements ISunglassesService {
     @Autowired
     private SunglassesRepo sunglassesRepository;
 
+    @Autowired
+    private CategoryRepo categoryRepository;
+
     // Convert Sunglasses entity to SunglassesDTO
     private SunglassesDTO convertToDTO(Sunglasses sunglasses) {
+        Category category = categoryRepository.findById(3L)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        sunglasses.setCategory(category);
         return new SunglassesDTO(
                 sunglasses.getId(),
                 sunglasses.getBrand(),

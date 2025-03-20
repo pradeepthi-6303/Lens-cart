@@ -19,11 +19,11 @@ public class Sunglasses {
 	private String brand;
 	private String name;
 	private String image;
-	private double price;
+	private Double price;
 	private String frameColor;
 	private String frameShape;
 	private String glassColor;
-	private double weight;
+	private Double weight;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false)
@@ -64,11 +64,11 @@ public class Sunglasses {
 		this.image = image;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -96,11 +96,11 @@ public class Sunglasses {
 		this.glassColor = glassColor;
 	}
 
-	public double getWeight() {
+	public Double getWeight() {
 		return weight;
 	}
 
-	public void setWeight(double weight) {
+	public void setWeight(Double weight) {
 		this.weight = weight;
 	}
 

@@ -16,12 +16,13 @@ public class SunglassesDTO {
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "{SunglassesDTO.name.pattern}")
     private String name;
 
+    @NotNull(message = "{SunglassesDTO.image.notNull}")
+//    @Pattern(regexp = "^[a-zA-Z ]+$", message = "{SunglassesDTO.image.pattern}")
     private String image;
 
     @NotNull(message = "{SunglassesDTO.price.notNull}")
     @DecimalMin(value = "0.01", message = "{SunglassesDTO.price.min}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{SunglassesDTO.price.pattern}")
-    private double price;
+    private Double price;
 
     @NotNull(message = "{SunglassesDTO.frameColor.notNull}")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "{SunglassesDTO.frameColor.pattern}")
@@ -36,11 +37,9 @@ public class SunglassesDTO {
     private String glassColor;
 
     @Min(value = 1, message = "{SunglassesDTO.weight.min}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{SunglassesDTO.weight.pattern}")
-    private double weight;
+    @NotNull(message = "{SunglassesDTO.weight.notNull}")
+    private Double weight;
 
-    @NotNull(message = "{SunglassesDTO.categoryId.notNull}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{SunglassesDTO.categoryId.pattern}")
     private Long categoryId;
 
     // Getters and Setters

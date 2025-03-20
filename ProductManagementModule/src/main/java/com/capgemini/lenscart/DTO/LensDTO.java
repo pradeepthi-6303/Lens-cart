@@ -26,17 +26,14 @@ public class LensDTO {
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "{LensDTO.color.pattern}")
     private String color;
 
-    @Positive(message = "{LensDTO.price.positive}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{LensDTO.price.pattern}")
-    private double price;
+   @Positive(message = "{LensDTO.price.positive}")
+    @NotNull(message = "{LensDTO.price.notNull}")
+   private Double price;
 
     @NotNull(message = "{LensDTO.quantityInBox.notNull}")
     @Positive(message = "{LensDTO.quantityInBox.positive}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{LensDTO.quantityInBox.pattern}")
     private int quantityInBox;
 
-    @NotNull(message = "{LensDTO.categoryId.notNull}")
-//    @Pattern(regexp = "^\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?$", message = "{LensDTO.categoryId.pattern}")
     private Long categoryId;
 
     // Getters and Setters
@@ -81,11 +78,11 @@ public class LensDTO {
         this.color = color;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -107,7 +104,7 @@ public class LensDTO {
 
     // Constructor
 
-    public LensDTO(Long id, String brand, String image, String shape, String color, double price,
+    public LensDTO(Long id, String brand, String image, String shape, String color, Double price,
                    int quantityInBox, Long categoryId) {
         this.id = id;
         this.brand = brand;
