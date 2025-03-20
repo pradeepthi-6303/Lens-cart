@@ -25,9 +25,6 @@ public class SunglassesServiceImpl implements ISunglassesService {
 
     // Convert Sunglasses entity to SunglassesDTO
     private SunglassesDTO convertToDTO(Sunglasses sunglasses) {
-        Category category = categoryRepository.findById(3L)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-        sunglasses.setCategory(category);
         return new SunglassesDTO(
                 sunglasses.getId(),
                 sunglasses.getBrand(),
@@ -38,12 +35,14 @@ public class SunglassesServiceImpl implements ISunglassesService {
                 sunglasses.getFrameShape(),
                 sunglasses.getGlassColor(),
                 sunglasses.getWeight(),
-                sunglasses.getId() // Ensure we are passing categoryId as is from the entity
+                sunglasses.getCategory().getId()
         );
     }
 
     // Convert SunglassesDTO to Sunglasses entity
     private Sunglasses convertToEntity(SunglassesDTO sunglassesDTO) {
+        Category category = categoryRepository.findById(3L)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         Sunglasses sunglasses = new Sunglasses();
         sunglasses.setBrand(sunglassesDTO.getBrand());
         sunglasses.setName(sunglassesDTO.getName());
@@ -53,7 +52,8 @@ public class SunglassesServiceImpl implements ISunglassesService {
         sunglasses.setFrameShape(sunglassesDTO.getFrameShape());
         sunglasses.setGlassColor(sunglassesDTO.getGlassColor());
         sunglasses.setWeight(sunglassesDTO.getWeight());
-        sunglasses.setId(sunglassesDTO.getCategoryId()); // Setting categoryId as is
+//        sunglasses.setId(sunglassesDTO.getCategoryId()); // Setting categoryId as is
+        sunglasses.setCategory(category);
         return sunglasses;
     }
 

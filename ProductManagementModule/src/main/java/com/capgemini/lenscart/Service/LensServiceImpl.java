@@ -33,7 +33,7 @@ public class LensServiceImpl implements ILensService {
                 lens.getColor(),
                 lens.getPrice(),
                 lens.getQuantityInBox(),
-                lens.getId()  // Ensure we are passing categoryId as is from the entity
+                lens.getCategory().getId()
         );
     }
 
@@ -48,7 +48,8 @@ public class LensServiceImpl implements ILensService {
         lens.setColor(lensDTO.getColor());
         lens.setPrice(lensDTO.getPrice());
         lens.setQuantityInBox(lensDTO.getQuantityInBox());
-        lens.setId(lensDTO.getCategoryId()); // Setting categoryId as is
+//        lens.setId(lensDTO.getCategoryId());
+        lens.setCategory(category); // Setting categoryId as is
         return lens;
     }
 
