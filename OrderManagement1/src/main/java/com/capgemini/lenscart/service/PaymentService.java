@@ -42,6 +42,8 @@ public class PaymentService {
 */
 
 
+import com.capgemini.lenscart.client.CartClient;
+import com.capgemini.lenscart.dto.CartDTO;
 import com.capgemini.lenscart.dto.PaymentDTO;
 import com.capgemini.lenscart.entity.Payment;
 import com.capgemini.lenscart.entity.PaymentType;
@@ -966,7 +968,7 @@ public class PaymentService {
 }
 */
 
-
+/*
     @Service
     @Validated
     public class PaymentService {
@@ -974,13 +976,16 @@ public class PaymentService {
         @Autowired
         private PaymentRepository paymentRepository;
 
+     //   @Autowired
+       // private CartClient cartClient;
+
         public Payment processPayment(@Valid PaymentDTO paymentDTO) throws Exception {
 
             // Validate Payment Type
             String paymentType = paymentDTO.getPaymentType().toUpperCase();
           /*  if (!paymentType.equals("NET BANKING") && !paymentType.equals("DEBIT CARD") && !paymentType.equals("CREDIT CARD")) {
                 throw new Exception("Invalid payment type. Allowed values: Net Banking, Debit Card, Credit Card.");
-            }*/
+           // }
 
             // Check if transactionId, orderId or userId already exist
             if (paymentRepository.existsByTransactionId(paymentDTO.getTransactionId())) {
@@ -1014,8 +1019,8 @@ public class PaymentService {
             Payment payment = paymentRepository.findById(id).orElseThrow(() -> new Exception("Payment not found"));
 
             // Update status to SUCCESS or CANCELLED based on the status parameter
-            if ("CANCELLED".equals(status)) {
-                payment.setStatus("CANCELLED");
+            if ("FAILURE".equals(status)) {
+                payment.setStatus("FAILURE");
             } else {
                 payment.setStatus("SUCCESS");
             }
@@ -1042,4 +1047,425 @@ public class PaymentService {
             }
         }
 
+       public Payment getPaymentDetailsByCartId(Integer cartId) {
+            // Use CartClient to get the Cart details
+            CartDTO cartDTO = CartClient.getCartById(cartId);
+
+            if (cartDTO != null) {
+                // Retrieve the payment info based on the cart orderId
+                Long orderId = (long) cartDTO.getItemId(); // Assuming itemId as orderId
+                return (Payment) paymentRepository.findByOrderId(orderId).orElse(null);  // Fetch payment by orderId
+            }
+
+            return null; // Return null or throw an exception if cart not found
+        }
+
+
     }
+    */
+/*
+@Service
+@Validated
+public class PaymentService {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    public Payment processPayment(@Valid PaymentDTO paymentDTO) throws Exception {
+
+        // Validate Payment Type
+        String paymentType = paymentDTO.getPaymentType().toUpperCase();
+
+        // Check if transactionId, itemId or userId already exist
+        if (paymentRepository.existsByTransactionId(paymentDTO.getTransactionId())) {
+            throw new Exception("Transaction ID already used.");
+        }
+
+        if (paymentRepository.existsByItemId(paymentDTO.getItemId())) {  // Updated to itemId
+            throw new Exception("Item ID already used.");
+        }
+
+        if (paymentRepository.existsByUserId(paymentDTO.getUserId())) {
+            throw new Exception("User ID already used.");
+        }
+
+        // Create Payment object from DTO
+        Payment payment = new Payment();
+        payment.setItemId(paymentDTO.getItemId());  // Updated to itemId
+        payment.setTransactionId(paymentDTO.getTransactionId());
+        payment.setPaymentType(paymentType);
+        payment.setAmount(paymentDTO.getAmount());
+        payment.setStatus("SUCCESS");  // Status is set to SUCCESS by default upon creation
+        payment.setUserId(paymentDTO.getUserId());
+        payment.setGeneratedTime(LocalDateTime.now());
+
+        // Save and return the payment
+        return paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public Payment updatePaymentStatus(Long id, String status) throws Exception {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new Exception("Payment not found"));
+
+        // Update status to SUCCESS or CANCELLED based on the status parameter
+        if ("FAILURE".equals(status)) {
+            payment.setStatus("FAILURE");
+        } else {
+            payment.setStatus("SUCCESS");
+        }
+        payment.setGeneratedTime(LocalDateTime.now());
+        return paymentRepository.save(payment);
+    }
+
+    public Payment getPaymentById(Long id) {
+        return paymentRepository.findById(id).orElse(null);
+    }
+
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
+
+    public void deletePayment(Long id) throws Exception {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        if (payment.isPresent()) {
+            paymentRepository.delete(payment.get());
+        } else {
+            throw new Exception("Payment with ID " + id + " not found");
+        }
+    }
+/*
+    public Payment getPaymentDetailsByItemId(Long itemId) {  // Updated to itemId
+        return paymentRepository.findByItemId(itemId).orElse();
+    //}
+
+
+}
+*/
+/*
+@Service
+@Validated
+public class PaymentService {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private CartClient cartClient;  // Injecting the CartClient
+
+    public Payment processPayment(@Valid PaymentDTO paymentDTO) throws Exception {
+
+        // Validate Payment Type
+        String paymentType = paymentDTO.getPaymentType().toUpperCase();
+
+        // Check if transactionId, itemId or userId already exist
+        if (paymentRepository.existsByTransactionId(paymentDTO.getTransactionId())) {
+            throw new Exception("Transaction ID already used.");
+        }
+
+        if (paymentRepository.existsByItemId(paymentDTO.getItemId())) {  // Updated to itemId
+            throw new Exception("Item ID already used.");
+        }
+
+        if (paymentRepository.existsByUserId(paymentDTO.getUserId())) {
+            throw new Exception("User ID already used.");
+        }
+
+        // Fetch cart details using CartClient based on itemId
+        CartDTO cartDTO = cartClient.getCartByItemId(paymentDTO.getItemId());
+        if (cartDTO == null) {
+            throw new Exception("Cart with itemId " + paymentDTO.getItemId() + " not found.");
+        }
+
+        // Create Payment object from DTO
+        Payment payment = new Payment();
+        payment.setItemId(paymentDTO.getItemId());  // Updated to itemId
+        payment.setTransactionId(paymentDTO.getTransactionId());
+        payment.setPaymentType(paymentType);
+        payment.setAmount(paymentDTO.getAmount());
+        payment.setStatus("SUCCESS");  // Status is set to SUCCESS by default upon creation
+        payment.setUserId(paymentDTO.getUserId());
+        payment.setGeneratedTime(LocalDateTime.now());
+
+        // Save and return the payment
+        return paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public Payment updatePaymentStatus(Long id, String status) throws Exception {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new Exception("Payment not found"));
+
+        // Update status to SUCCESS or CANCELLED based on the status parameter
+        if ("FAILURE".equals(status)) {
+            payment.setStatus("FAILURE");
+        } else {
+            payment.setStatus("SUCCESS");
+        }
+        payment.setGeneratedTime(LocalDateTime.now());
+        return paymentRepository.save(payment);
+    }
+
+    public Payment getPaymentById(Long id) {
+        return paymentRepository.findById(id).orElse(null);
+    }
+
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
+
+    public void deletePayment(Long id) throws Exception {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        if (payment.isPresent()) {
+            paymentRepository.delete(payment.get());
+        } else {
+            throw new Exception("Payment with ID " + id + " not found");
+        }
+    }
+
+}
+*/
+/*
+@Service
+@Validated
+public class PaymentService {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private CartClient cartClient;  // Injecting the CartClient
+
+    public Payment processPayment(@Valid PaymentDTO paymentDTO) throws Exception {
+
+        // Validate Payment Type
+        String paymentType = paymentDTO.getPaymentType().toUpperCase();
+
+        // Check if transactionId, itemId or userId already exist
+        if (paymentRepository.existsByTransactionId(paymentDTO.getTransactionId())) {
+            throw new Exception("Transaction ID already used.");
+        }
+
+        if (paymentRepository.existsByItemId(paymentDTO.getItemId())) {  // Updated to itemId
+            throw new Exception("Item ID already used.");
+        }
+
+        if (paymentRepository.existsByUserId(paymentDTO.getUserId())) {
+            throw new Exception("User ID already used.");
+        }
+
+        // Fetch cart details using CartClient based on itemId
+        CartDTO cartDTO = cartClient.getCartByItemId(paymentDTO.getItemId());
+        if (cartDTO == null) {
+            throw new Exception("Cart with itemId " + paymentDTO.getItemId() + " not found.");
+        }
+
+        // Create Payment object from DTO
+        Payment payment = new Payment();
+        payment.setItemId(paymentDTO.getItemId());  // Updated to itemId
+        payment.setTransactionId(paymentDTO.getTransactionId());
+        payment.setPaymentType(paymentType);
+        payment.setAmount(paymentDTO.getAmount());
+        payment.setStatus("SUCCESS");  // Status is set to SUCCESS by default upon creation
+        payment.setUserId(paymentDTO.getUserId());
+        payment.setGeneratedTime(LocalDateTime.now());
+
+        // Save and return the payment
+        return paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public Payment updatePaymentStatus(Long id, String status) throws Exception {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new Exception("Payment not found"));
+
+        // Update status to SUCCESS or CANCELLED based on the status parameter
+        if ("FAILURE".equals(status)) {
+            payment.setStatus("FAILURE");
+        } else {
+            payment.setStatus("SUCCESS");
+        }
+        payment.setGeneratedTime(LocalDateTime.now());
+        return paymentRepository.save(payment);
+    }
+
+    public Payment getPaymentById(Long id) {
+        return paymentRepository.findById(id).orElse(null);
+    }
+
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
+
+    public void deletePayment(Long id) throws Exception {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        if (payment.isPresent()) {
+            paymentRepository.delete(payment.get());
+        } else {
+            throw new Exception("Payment with ID " + id + " not found");
+        }
+    }
+
+}
+*/
+/*
+@Service
+@Validated
+public class PaymentService {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private CartClient cartClient;  // Injecting the CartClient
+
+    public Payment processPayment(@Valid PaymentDTO paymentDTO) throws Exception {
+        String paymentType = paymentDTO.getPaymentType().toUpperCase();
+
+        // Check if transactionId, itemId, or userId already exist in the database
+        if (paymentRepository.existsByTransactionId(paymentDTO.getTransactionId())) {
+            throw new Exception("Transaction ID already used.");
+        }
+
+        if (paymentRepository.existsByItemId(paymentDTO.getItemId())) {
+            throw new Exception("Item ID already used.");
+        }
+
+        if (paymentRepository.existsByUserId(paymentDTO.getUserId())) {
+            throw new Exception("User ID already used.");
+        }
+
+        // Fetch cart details using CartClient
+        CartDTO cartDTO = cartClient.getCartByItemId(paymentDTO.getItemId());
+        if (cartDTO == null) {
+            throw new Exception("Cart with itemId " + paymentDTO.getItemId() + " not found.");
+        }
+
+        // Create Payment object and set values
+        Payment payment = new Payment();
+        payment.setItemId(paymentDTO.getItemId());
+        payment.setTransactionId(paymentDTO.getTransactionId());
+        payment.setPaymentType(paymentType);
+        payment.setAmount(paymentDTO.getAmount());
+        payment.setStatus("SUCCESS");  // Default status upon creation
+        payment.setUserId(paymentDTO.getUserId());
+        payment.setGeneratedTime(LocalDateTime.now());
+
+        // Save and return the payment
+        return paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public Payment updatePaymentStatus(Long id, String status) throws Exception {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new Exception("Payment not found"));
+
+        if ("FAILURE".equals(status)) {
+            payment.setStatus("FAILURE");
+        } else {
+            payment.setStatus("SUCCESS");
+        }
+
+        payment.setGeneratedTime(LocalDateTime.now());
+        return paymentRepository.save(payment);
+    }
+
+    public Payment getPaymentById(Long id) {
+        return paymentRepository.findById(id).orElse(null);
+    }
+
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
+
+    public void deletePayment(Long id) throws Exception {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        if (payment.isPresent()) {
+            paymentRepository.delete(payment.get());
+        } else {
+            throw new Exception("Payment with ID " + id + " not found");
+        }
+    }
+}*/
+
+@Service
+public class PaymentService {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private CartClient cartClient;  // Injecting the CartClient
+
+    public Payment processPayment(@Valid PaymentDTO paymentDTO) throws Exception {
+
+        // Validate Payment Type
+        String paymentType = paymentDTO.getPaymentType().toUpperCase();
+
+        // Check if transactionId, itemId, or userId already exist
+        if (paymentRepository.existsByTransactionId(paymentDTO.getTransactionId())) {
+            throw new Exception("Transaction ID already used.");
+        }
+
+        if (paymentRepository.existsByItemId(paymentDTO.getItemId())) {
+            throw new Exception("Item ID already used.");
+        }
+
+        if (paymentRepository.existsByUserId(paymentDTO.getUserId())) {
+            throw new Exception("User ID already used.");
+        }
+
+        // Fetch cart details using CartClient based on itemId
+        CartDTO cartDTO = cartClient.getCartByItemId(paymentDTO.getItemId());
+        if (cartDTO == null) {
+            throw new Exception("Cart with itemId " + paymentDTO.getItemId() + " not found.");
+        }
+
+        double cartAmount = cartDTO.getPrice();
+
+
+        // Create Payment object from DTO
+        Payment payment = new Payment();
+        payment.setItemId(paymentDTO.getItemId());
+        payment.setTransactionId(paymentDTO.getTransactionId());
+        payment.setPaymentType(paymentType);
+        //payment.setAmount(paymentDTO.getAmount());
+        payment.setAmount(cartAmount);  // Set the amount to the cart's price
+        payment.setStatus("SUCCESS");
+        payment.setUserId(paymentDTO.getUserId());
+        payment.setGeneratedTime(LocalDateTime.now());
+
+        // Save and return the payment
+        return paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public Payment updatePaymentStatus(Long id, String status) throws Exception {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new Exception("Payment not found"));
+
+        // Update status
+        if ("FAILURE".equals(status)) {
+            payment.setStatus("FAILURE");
+        } else {
+            payment.setStatus("SUCCESS");
+        }
+        payment.setGeneratedTime(LocalDateTime.now());
+        return paymentRepository.save(payment);
+    }
+
+    public Payment getPaymentById(Long id) {
+        return paymentRepository.findById(id).orElse(null);
+    }
+
+    public void deletePayment(Long id) throws Exception {
+        Optional<Payment> payment = paymentRepository.findById(id);
+        if (payment.isPresent()) {
+            paymentRepository.delete(payment.get());
+        } else {
+            throw new Exception("Payment with ID " + id + " not found");
+        }
+    }
+
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
+    public Payment getPaymentByItemId(int itemId) {
+        return paymentRepository.findByItemId(itemId);
+    }
+}

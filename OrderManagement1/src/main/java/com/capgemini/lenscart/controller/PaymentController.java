@@ -52,12 +52,15 @@ public class PaymentController {
 */
 
 
+import com.capgemini.lenscart.client.CartClient;
+import com.capgemini.lenscart.dto.CartDTO;
 import com.capgemini.lenscart.dto.PaymentDTO;
 import com.capgemini.lenscart.entity.Payment;
 import com.capgemini.lenscart.exceptions.InvalidPaymentException;
 import com.capgemini.lenscart.exceptions.PaymentException;
 import com.capgemini.lenscart.exceptions.PaymentNotFoundException;
 import com.capgemini.lenscart.service.PaymentService;
+import feign.FeignException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,10 +73,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
@@ -479,7 +479,7 @@ public class PaymentController {
     }
 }
 */
-
+/*
     @RestController
     @RequestMapping("/api/payments")
     public class PaymentController {
@@ -497,7 +497,7 @@ public class PaymentController {
             }
         }
 
-      /*  @PutMapping("/{id}/status")
+      // @PutMapping("/{id}/status")
         public ResponseEntity<?> updatePaymentStatus(@PathVariable Long id, @RequestParam String status) {
             try {
                 Payment updatedPayment = paymentService.updatePaymentStatus(id, status);
@@ -505,7 +505,7 @@ public class PaymentController {
             } catch (Exception e) {
                 return ResponseEntity.badRequest().body(e.getMessage()); // Return an error message in the body
             }
-        }*/
+        //}
         @PutMapping("/{id}/status")
         public Payment updatePaymentStatus(@PathVariable Long id, @RequestBody PaymentDTO paymentDTO) throws Exception {
             return paymentService.updatePaymentStatus(id, paymentDTO.getStatus());
@@ -535,6 +535,264 @@ public class PaymentController {
                 return ResponseEntity.status(404).body(e.getMessage());
             }
         }
-        
+
+       @GetMapping("/by-cart/{cartId}")
+        public Payment getPaymentByCartId(@PathVariable Integer cartId) {
+            return paymentService.getPaymentDetailsByCartId(cartId);
+        }
+
     }
 
+*/
+/*
+@RestController
+@RequestMapping("/api/payments")
+public class PaymentController {
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @PostMapping("/createpayment")
+    public ResponseEntity<?> createPayment(@RequestBody @Valid PaymentDTO paymentDTO) {
+        try {
+            Payment payment = paymentService.processPayment(paymentDTO);
+            return ResponseEntity.ok(payment);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/status")
+    public Payment updatePaymentStatus(@PathVariable Long id, @RequestBody PaymentDTO paymentDTO) throws Exception {
+        return paymentService.updatePaymentStatus(id, paymentDTO.getStatus());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
+        Payment payment = paymentService.getPaymentById(id);
+        if (payment == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(payment);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Payment>> getAllPayments() {
+        List<Payment> payments = paymentService.getAllPayments();
+        return ResponseEntity.ok(payments);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePayment(@PathVariable Long id) {
+        try {
+            paymentService.deletePayment(id);
+            return ResponseEntity.ok("Payment with ID " + id + " deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+/*
+    @GetMapping("/by-cart/{itemId}")
+    public Payment getPaymentByItemId(@PathVariable Long itemId) {  // Updated to itemId
+        return paymentService.getPaymentDetailsByItemId(itemId);
+    }
+
+
+}
+*//*@RestController
+@RequestMapping("/api/payments")
+public class PaymentController {
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @PostMapping("/createpayment")
+    public ResponseEntity<?> createPayment(@RequestBody @Valid PaymentDTO paymentDTO) {
+        try {
+            Payment payment = paymentService.processPayment(paymentDTO);
+            return ResponseEntity.ok(payment);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());  // Return an error message in the body
+        }
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updatePaymentStatus(@PathVariable Long id, @RequestParam String status) {
+        try {
+            Payment updatedPayment = paymentService.updatePaymentStatus(id, status);
+            return ResponseEntity.ok(updatedPayment);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());  // Return an error message in the body
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
+        Payment payment = paymentService.getPaymentById(id);
+        if (payment == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(payment);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Payment>> getAllPayments() {
+        List<Payment> payments = paymentService.getAllPayments();
+        return ResponseEntity.ok(payments);
+    }
+
+    // DELETE method to delete a payment by its ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePayment(@PathVariable Long id) {
+        try {
+            paymentService.deletePayment(id);  // Call the service to delete payment
+            return ResponseEntity.ok("Payment with ID " + id + " deleted successfully");
+        } catch (Exception e) {
+            //return ResponseEntity.status(404).body(e.getMessage());
+            return ResponseEntity.badRequest().body("Failed to delete payment with ID " + id + ": " + e.getMessage());
+        }
+    }
+}
+*/
+/*
+@RestController
+@RequestMapping("/api/payments")
+public class PaymentController {
+@Autowired
+private PaymentService paymentService;
+
+@PostMapping("/createpayment")
+public ResponseEntity<?> createPayment(@RequestBody @Valid PaymentDTO paymentDTO) {
+    try {
+        Payment payment = paymentService.processPayment(paymentDTO);
+        return ResponseEntity.ok(payment);
+    } catch (Exception e) {
+        // Logging the error (consider using a logger like SLF4J here)
+        return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+    }
+}
+
+@PutMapping("/{id}/status")
+public ResponseEntity<?> updatePaymentStatus(@PathVariable Long id, @RequestParam String status) {
+    try {
+        Payment updatedPayment = paymentService.updatePaymentStatus(id, status);
+        return ResponseEntity.ok(updatedPayment);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+    }
+}
+
+@GetMapping("/{id}")
+public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
+    Payment payment = paymentService.getPaymentById(id);
+    if (payment == null) {
+        return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(payment);
+}
+
+@GetMapping
+public ResponseEntity<List<Payment>> getAllPayments() {
+    List<Payment> payments = paymentService.getAllPayments();
+    return ResponseEntity.ok(payments);
+}
+
+@DeleteMapping("/{id}")
+public ResponseEntity<String> deletePayment(@PathVariable Long id) {
+    try {
+        paymentService.deletePayment(id);
+        return ResponseEntity.ok("Payment with ID " + id + " deleted successfully");
+    } catch (Exception e) {
+        // Logging the error (consider using a logger like SLF4J here)
+        return ResponseEntity.badRequest().body("Failed to delete payment with ID " + id + ": " + e.getMessage());
+    }
+}
+}
+*/
+@RestController
+@RequestMapping("/api/payments")
+public class PaymentController {
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
+    private CartClient cartClient;
+
+    @PostMapping("/createpayment")
+    public ResponseEntity<?> createPayment(@RequestBody @Valid PaymentDTO paymentDTO) {
+        try {
+            Payment payment = paymentService.processPayment(paymentDTO);
+            return ResponseEntity.ok(payment);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updatePaymentStatus(@PathVariable Long id, @RequestParam String status) {
+        try {
+            Payment updatedPayment = paymentService.updatePaymentStatus(id, status);
+            return ResponseEntity.ok(updatedPayment);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
+        Payment payment = paymentService.getPaymentById(id);
+        if (payment == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(payment);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Payment>> getAllPayments() {
+        List<Payment> payments = paymentService.getAllPayments();
+        return ResponseEntity.ok(payments);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePayment(@PathVariable Long id) {
+        try {
+            paymentService.deletePayment(id);
+            return ResponseEntity.ok("Payment with ID " + id + " deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to delete payment with ID " + id + ": " + e.getMessage());
+        }
+
+    }
+    @GetMapping("/cart/{itemId}")
+    public ResponseEntity<?> getCartAndPaymentDetails(@PathVariable("itemId") int itemId) {
+        try {
+            // Fetch Cart details using CartClient
+            CartDTO cartDTO = null;
+            try {
+                cartDTO = cartClient.getCartByItemId(itemId);
+            } catch (FeignException.NotFound e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Cart not found with itemId " + itemId);
+            }
+
+            // Fetch Payment details using PaymentService
+            Payment payment = paymentService.getPaymentByItemId(itemId);
+            if (payment == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Payment for itemId " + itemId + " not found.");
+            }
+
+            // Return cart and payment details as a response
+            Map<String, Object> response = new HashMap<>();
+            response.put("cart", cartDTO);
+            response.put("payment", payment);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+}
