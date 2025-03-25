@@ -105,12 +105,17 @@ public class CartItemController {
         cart.setPrice(cartItemDto.getCart().getPrice());
         cart.setImage(cartItemDto.getCart().getImage());
         cart.setCustomerId(cartItemDto.getCart().getCustomerId());
-        
+
+        // Calculate and set the total price
+        double total = cart.getPrice() * cartItem.getQuantity();
+        cart.setTotal(total);
+
         cartItem.setCart(cart);
         
         CartItem savedCartItem = cartItemService.addCartItem(cartItem);
         return new ResponseEntity<>(savedCartItem, HttpStatus.CREATED);
     }
+
 
 
     @GetMapping("/{id}")

@@ -22,9 +22,20 @@ public class Cart {
     private double price;
     private String image;
     private int customerId;
+    private double total;
     
     
- // One-to-many relationship with CartItem
+    
+    
+ public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	// One-to-many relationship with CartItem
     @OneToMany(mappedBy = "cart") // 'ca[rt' refers to the Cart object in CartItem class
     private List<CartItem> cartItems;
 
