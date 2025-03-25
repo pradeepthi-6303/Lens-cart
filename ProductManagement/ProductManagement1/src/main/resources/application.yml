@@ -1,0 +1,19 @@
+spring:
+   application:
+     name: ProductManagement1
+   datasource:
+    url: jdbc:mysql://localhost:3306/OrderManagement_lenscart
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+   jpa:
+     hibernate:
+       ddl-auto: update
+     show-sql: true
+   messages:
+     basename:
+       messages
+server:
+  port: 8086
+
+ 
