@@ -56,25 +56,15 @@ import com.capgemini.lenscart.client.CartClient;
 import com.capgemini.lenscart.dto.CartDTO;
 import com.capgemini.lenscart.dto.PaymentDTO;
 import com.capgemini.lenscart.entity.Payment;
-import com.capgemini.lenscart.exceptions.InvalidPaymentException;
-import com.capgemini.lenscart.exceptions.PaymentException;
-import com.capgemini.lenscart.exceptions.PaymentNotFoundException;
-import com.capgemini.lenscart.service.PaymentService;
+import com.capgemini.lenscart.service.PaymentServiceImpl;
 import feign.FeignException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /*
 @RestController
@@ -714,7 +704,7 @@ public ResponseEntity<String> deletePayment(@PathVariable Long id) {
 public class PaymentController {
 
     @Autowired
-    private PaymentService paymentService;
+    private PaymentServiceImpl paymentService;
 
     @Autowired
     private CartClient cartClient;

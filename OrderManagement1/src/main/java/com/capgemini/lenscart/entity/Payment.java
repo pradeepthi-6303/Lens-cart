@@ -615,7 +615,7 @@ public class Payment {
     private String paymentType;
     private Double amount;
     private String status;
-    private Long userId;
+    //private Long userId;
     private LocalDateTime generatedTime = LocalDateTime.now();
 
     // Getters and Setters
@@ -666,14 +666,16 @@ public class Payment {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public Long getUserId() {
+/*
+   public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+*/
+
 
     public LocalDateTime getGeneratedTime() {
         return generatedTime;

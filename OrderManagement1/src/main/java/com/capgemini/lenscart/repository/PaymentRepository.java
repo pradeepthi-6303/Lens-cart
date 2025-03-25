@@ -47,7 +47,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     boolean existsByItemId(int itemId);  // Updated to itemId
 
-    boolean existsByUserId(Long userId);
+    //boolean existsByUserId(Long userId);
 
     //Payment findByItemId(int itemId);  // Updated to itemId
 

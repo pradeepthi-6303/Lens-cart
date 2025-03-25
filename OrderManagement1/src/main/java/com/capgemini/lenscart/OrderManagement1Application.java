@@ -7,9 +7,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
-
-
+@EnableAutoConfiguration
 @SpringBootApplication
+@EnableDiscoveryClient
 public class OrderManagement1Application {
 
 	public static void main(String[] args) {

@@ -1070,8 +1070,8 @@ private Long orderId;
     @Positive(message = "{amount}")
     private Double amount;
 
-    @NotNull(message = "{userId}")
-    private Long userId;
+   // @NotNull(message = "{userId}")
+    //private Long userId;
 
     private String status;
 
@@ -1107,7 +1107,7 @@ private Long orderId;
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-
+  /*
     public Long getUserId() {
         return userId;
     }
@@ -1115,7 +1115,7 @@ private Long orderId;
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
+*/
     public String getStatus() {
         return status;
     }
