@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: Usermanagement
+  datasource:
+    url: jdbc:mysql://localhost:3306/usermanagement_lenacart
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  messages:
+    basename: messages
+
+server:
+  port: 8080
+secret:
+  key: Pradeepthi2421425236WelcomToJWT123456!@#$%^&*()JavaProgramming1223565786ujghbfdvxqwertyujhgffdaacv11111111111111111111111111111111111111
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
