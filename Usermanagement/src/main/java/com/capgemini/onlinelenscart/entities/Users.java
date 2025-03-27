@@ -18,7 +18,7 @@ import lombok.Builder;
 import jakarta.persistence.JoinColumn;
 
 @Entity
-@Builder
+//@Builder
 @Table(name = "users")
 public class Users {
 	@Id

@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.onlinelenscart.DTO.LoginRequest;
-import com.capgemini.onlinelenscart.DTO.UserDTO;
 import com.capgemini.onlinelenscart.Exception.InvalidUserException;
 import com.capgemini.onlinelenscart.Exception.UserNotFoundException;
 import com.capgemini.onlinelenscart.Jwt.JwtUtil;
@@ -21,101 +21,136 @@ import com.capgemini.onlinelenscart.entities.UserRole;
 import com.capgemini.onlinelenscart.entities.Users;
 
 import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    // Logger to track operations and log important events
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    // Dependencies injected via constructor (Handled by Lombok @RequiredArgsConstructor)
+    private final UserRepository userRepository; // Repository for database operations
+    private final PasswordEncoder passwordEncoder; // Encrypts passwords before storing
+    private final AuthenticationManager authenticationManager; // Handles authentication
+    private final JwtUtil jwtUtil; // Generates JWT tokens for authentication
+
     
-//    @Override
-//    public String createCustomer(UserDTO userDTO) {
-//        var customer=userRepository.save(Users.builder()
-//                .password(passwordEncoder.encode(userDTO.getPassword()))
-//                .username(userDTO.getUsername())
-//                .roles(userDTO.getRoles())
-//                .email(userDTO.getEmail())
-//                .firstName(userDTO.getFirstName())
-//                .lastName(userDTO.getLastName())
-//                .build());
-//        return "Customer created with ID ::"+customer.getId();
-//    }
+     // Registers a new user with the given details.
+     // Encrypts the password before saving and assigns roles.
+     
     public Users registerUser(String firstName, String lastName, String username, String password, String email, Set<UserRole> roles) {
+        // Basic validation to ensure required fields are not null
         if (username == null || password == null || email == null) {
+            logger.error("Invalid registration attempt: Missing required fields");
             throw new InvalidUserException("Username, password, or email cannot be null");
         }
 
-      
+        // Encrypt the password to ensure security before storing it
         String encryptedPassword = passwordEncoder.encode(password);
 
- 
+        // Creating a new user object with the provided details
         Users user = new Users();
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setUsername(username);
-        user.setPassword(encryptedPassword);  // Set the encrypted password
+        user.setPassword(encryptedPassword); // Storing encrypted password
         user.setEmail(email);
-        user.setRoles(roles);
+        user.setRoles(roles); // Assigning roles (e.g., CUSTOMER, ADMIN)
 
-        
-        return userRepository.save(user);
+        // Saving the new user into the database
+        Users savedUser = userRepository.save(user);
+        logger.info("User registered successfully with username: {}", username);
+        return savedUser;
     }
 
+    
+     // Handles user login by verifying the username and password.
+     // If authentication is successful, generates a JWT token.
+     
     @Override
     public String login(LoginRequest loginRequest) {
+        logger.info("Login attempt for username: {}", loginRequest.getUsername());
+        
+        try {
+            // Creating an authentication token with the provided username and password
+            UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
 
-        UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
-        var authentication=authenticationManager.authenticate(token);
-        var isValid=authentication.isAuthenticated();
-        if(isValid){
-            return jwtUtil.generateToken(loginRequest.getUsername());
+            // Authenticate the user using Spring Security
+            var authentication = authenticationManager.authenticate(token);
+
+            // If authentication is successful, generate a JWT token for the user
+            if (authentication.isAuthenticated()) {
+                String jwt = jwtUtil.generateToken(loginRequest.getUsername());
+                logger.info("Login successful for username: {}", loginRequest.getUsername());
+                return jwt; // Returning JWT token
+            }
+        } catch (Exception e) {
+            logger.error("Login failed for username: {} - Error: {}", loginRequest.getUsername(), e.getMessage());
         }
-        return "Login Failed";
+
+        // If authentication fails, throw an exception
+        throw new InvalidUserException("Invalid username or password");
     }
- // Admin functionalities - List all customers
-  public List<Users> listUsers() {
-      
-      return userRepository.findAll();
-  }
-  public Users getUserById(Long id) {
-  	return userRepository.findById(id)
-  			.orElseThrow(()-> new UserNotFoundException("User not found with id: "+id));
-  	
-  }
 
+    
+     // Retrieves a list of all registered users from the database.
+     
+    public List<Users> listUsers() {
+        logger.info("Fetching all users from the database");
+        return userRepository.findAll();
+    }
 
-  // Delete a customer
-  public boolean deleteUser(Long userId) {
-      Optional<Users> userOpt = userRepository.findById(userId);
-      if (!userOpt.isPresent()) {
-          throw new UserNotFoundException("User with ID " + userId + " not found");
-      }
-      userRepository.delete(userOpt.get());
-      return true;
-  }
+    
+     // Fetches a single user by their unique ID.
+     // Throws an exception if the user is not found.
+     
+    public Users getUserById(Long id) {
+        logger.info("Fetching user with ID: {}", id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("User not found with ID: {}", id);
+                    return new UserNotFoundException("User not found with id: " + id);
+                });
+    }
 
-  // Update a user's role
-  public Users updateUserRole(Long userId, Set<UserRole> newRoles) {
-      Optional<Users> userOpt = userRepository.findById(userId);
-      if (!userOpt.isPresent()) {
-          throw new UserNotFoundException("User with ID " + userId + " not found");
-      }
-      Users user = userOpt.get();
-      user.setRoles(newRoles);
-      return userRepository.save(user);
-  }
-  public Set<Users> listCustomers() {
-      Set<Users> customers = new HashSet<>();
-      for (Users user : userRepository.findAll()) {
-          if (user.getRoles().contains(UserRole.CUSTOMER)) {
-              customers.add(user);
-          }
-      }
-      return customers;
-  }
+    
+     // Deletes a user from the database using their ID.
+     // If the user does not exist, throws an exception.
+     
+    public boolean deleteUser(Long userId) {
+        logger.info("Attempting to delete user with ID: {}", userId);
 
+        // Check if the user exists in the database
+        Optional<Users> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            userRepository.delete(userOpt.get()); // Delete user if found
+            logger.info("User deleted successfully with ID: {}", userId);
+            return true;
+        }
 
- 
+        // If user is not found, throw an exception
+        logger.error("User deletion failed - User not found with ID: {}", userId);
+        throw new UserNotFoundException("User with ID " + userId + " not found");
+    }
+
+    
+     // Fetches a list of all users who have the CUSTOMER role.
+     
+    public Set<Users> listCustomers() {
+        logger.info("Fetching all customers from the database");
+        Set<Users> customers = new HashSet<>();
+        
+        // Iterate through all users and check their roles
+        for (Users user : userRepository.findAll()) {
+            if (user.getRoles().contains(UserRole.CUSTOMER)) {
+                customers.add(user); // Add to the customer list if they have the CUSTOMER role
+            }
+        }
+
+        logger.info("Total customers found: {}", customers.size());
+        return customers;
+    }
 }
+

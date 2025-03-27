@@ -23,7 +23,7 @@ public class JwtUtil {
 	                .setSubject(subject)
 	                .signWith(SignatureAlgorithm.HS512, secretKey.getBytes())
 	                .issuer("Pradeepthi")
-	                .expiration(new Date(System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(3)))
+	                .expiration(new Date(System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(10)))
 	                .issuedAt(new Date(System.currentTimeMillis()))
 	                .compact();
 	    }

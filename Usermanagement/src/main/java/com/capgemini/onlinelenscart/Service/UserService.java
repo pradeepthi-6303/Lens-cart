@@ -16,7 +16,6 @@ public interface UserService {
 	    String login(LoginRequest loginRequest);
 	    public Users getUserById(Long id);
 	    public boolean deleteUser(Long userId);
-	    public Users updateUserRole(Long userId, Set<UserRole> newRoles);
 	    public Set<Users> listCustomers();
         public List<Users> listUsers();
 		
