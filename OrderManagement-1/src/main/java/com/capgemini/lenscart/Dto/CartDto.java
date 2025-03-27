@@ -11,7 +11,7 @@ public class CartDto {
     private String name;
 
     @NotBlank(message = "{cart.brand.notblank}")
-    private String brand;
+    private String brand;	
 
     @NotNull(message = "{cart.price.notnull}")
     @Positive(message = "{cart.price.positive}")
@@ -24,6 +24,8 @@ public class CartDto {
     @Min(value = 1, message = "{cart.customerId.min}")
     private Integer customerId;
 
+    
+   
     // Getters and Setters
     public String getName() {
         return name;

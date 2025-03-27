@@ -66,5 +66,10 @@ public class CartItem {
         this.cart = cart;
     }
 
+//	public Object getCategoryId() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
 	
 }

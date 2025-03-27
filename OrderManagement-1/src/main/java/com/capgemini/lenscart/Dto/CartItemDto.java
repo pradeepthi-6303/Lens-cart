@@ -1,6 +1,6 @@
 package com.capgemini.lenscart.Dto;
 
-import com.capgemini.lenscart.Entities.Cart;
+
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Positive;
 
 public class CartItemDto {
 
-    private Integer id; // Assuming you want to track the ID of the cart item
+    private int cartItemId; // Assuming you want to track the ID of the cart item
 
     @NotNull(message = "Cart customer ID should not be empty")
     @Positive(message = "customerId must be positive")
@@ -23,12 +23,14 @@ public class CartItemDto {
     @Valid
     private CartDto cart; 
 
-	public Integer getId() {
-		return id;
+	
+
+	public int getCartItemId() {
+		return cartItemId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setCartItemId(int cartItemId) {
+		this.cartItemId = cartItemId;
 	}
 
 	public int getCustomerId() {
@@ -53,6 +55,11 @@ public class CartItemDto {
 
 	public void setCart(CartDto cart) {
 		this.cart = cart;
+	}
+
+	public void setId(Integer id) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

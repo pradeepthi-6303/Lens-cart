@@ -26,7 +26,7 @@ public class Cart {
     
     
     
-    
+ 
  public double getTotal() {
 		return total;
 	}
@@ -43,13 +43,14 @@ public class Cart {
         super();
     }
 
-    public Cart(int itemId, String name, String brand, double price, String image, int customerId) {
+    public Cart(int itemId, String name, String brand, double price, String image, int customerId,double total) {
         this.itemId = itemId;
         this.name = name;
         this.brand = brand;
         this.price = price;
         this.image = image;
         this.customerId = customerId;
+        this.total=total;
     }
 
     public int getItemId() {
