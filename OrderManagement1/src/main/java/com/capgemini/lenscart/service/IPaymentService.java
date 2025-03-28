@@ -1,21 +1,25 @@
 package com.capgemini.lenscart.service;
-
 import com.capgemini.lenscart.dto.PaymentDTO;
 import com.capgemini.lenscart.entity.Payment;
-
 import java.util.List;
-
 public interface IPaymentService {
-    Payment processPayment(PaymentDTO paymentDTO) throws Exception;
 
-    Payment updatePaymentStatus(Long id, String status) throws Exception;
+        // Method to process the payment
+        Payment processPayment(PaymentDTO paymentDTO) throws Exception;
 
-    Payment getPaymentById(Long id);
+        // Method to update payment status
+        Payment updatePaymentStatus(Long id, String status) throws Exception;
 
-    void deletePayment(Long id) throws Exception;
+        // Method to fetch a payment by its ID
+        Payment getPaymentById(Long id);
 
-    List<Payment> getAllPayments();
+        // Method to delete a payment
+        void deletePayment(Long id) throws Exception;
 
-    Payment getPaymentByItemId(int itemId);
+        // Method to fetch all payments
+        List<Payment> getAllPayments();
 
-}
+        // Method to fetch payment by item ID
+        Payment getPaymentByItemId(int itemId);
+    }
+

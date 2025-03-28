@@ -11,12 +11,6 @@ public class CartDTO {
     private String image;
     private int customerId;
 
-    // One-to-many relationship with CartItem
-   // @OneToMany(mappedBy = "cart") // 'ca[rt' refers to the Cart object in CartItem class
-    //private List<CartItem> cartItems;
-
-
-
 
 
     public int getItemId() {
